@@ -4,10 +4,14 @@ const { ethers } = require("hardhat");
 describe("Token", () => {
     const tokens = (n) => ethers.utils.parseUnits(n.toString(), 'ether');
     let token;
+    let accounts;
+    let deployer;
 
     beforeEach(async () => {
         const Token = await ethers.getContractFactory("Token");
         token = await Token.deploy('StonksCoin', 'STK', '1000000');
+        accounts = await ethers.getSigners();
+        deployer = accounts[0].address;
     });
 
     describe('Deployement', () => {
@@ -28,5 +32,12 @@ describe("Token", () => {
         it("has correct totalSupply", async () => {
             expect(await token.totalSupply()).to.equal(totalSupply);
         });
+        it("assign total supply to deployer", async () => {
+            expect(await token.balanceOf(deployer)).to.equal(totalSupply);
+        })
     })
+
+    describe('', () => {
+
+    });
 });

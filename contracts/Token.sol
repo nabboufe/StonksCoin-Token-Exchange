@@ -8,8 +8,10 @@ contract Token {
     string public symbol;
     uint8 public decimals;
     uint256 public totalSupply; // 1,000,000 x 10^18
-    mapping (uint256 => Account) accounts;
 
+    mapping(address => uint256) public balanceOf;
+
+    mapping (uint256 => Account) accounts;
     struct Account {
         uint256 nonce;
         uint256 balance;
@@ -26,5 +28,6 @@ contract Token {
         symbol = _symbol;
         decimals = 18;
         totalSupply = _totalSupply * (10 ** decimals);
+        balanceOf[msg.sender] = totalSupply;
     }
 }

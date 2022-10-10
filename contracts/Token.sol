@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.17;
 
-//import "hardhat/console.sol";
-
 contract Token {
     string public name;
     string public symbol;
     uint8 public decimals;
     uint256 public totalSupply; // 1,000,000 x 10^18
 
-    mapping(address => uint256) public balanceOf;
+    mapping(address => uint256) public balanceOf; 
     mapping(address => mapping(address => uint256)) public allowance;
 
     event Transfer(
@@ -39,8 +37,8 @@ contract Token {
         uint256 _value)
         public returns (bool success)
     {
-        require(balanceOf[msg.sender] >= _value, "Insufficient balance"); 
-        require(_to != address(0), "Address(0) not allowed");
+        require(balanceOf[msg.sender] >= _value, "f/ transfer() : Insufficient balance"); 
+        require(_to != address(0), "f/ transfer() : Address(0) not allowed");
 
         balanceOf[_to] += _value;
         balanceOf[msg.sender] -= _value;
@@ -55,12 +53,12 @@ contract Token {
         uint256 _value)
         public returns (bool succss)
     {
-        require(_from != address(0), "Address(0) not allowed");
-        require(_to != address(0), "Address(0) not allowed");
+        require(_from != address(0), "f/ transferFrom() : Address(0) not allowed");
+        require(_to != address(0), "f/ transferFrom() : Address(0) not allowed");
 
-        require(balanceOf[_from] >= _value, "Insufficient balance");
+        require(balanceOf[_from] >= _value, "f/ transferFrom() : Insufficient balance");
         require(allowance[_from][_to] >= _value,
-            "Token transfer not allowed by owner");
+            "f/ transferFrom() : Token transfer not allowed by owner");
 
         balanceOf[_to] += _value;
         balanceOf[_from] -= _value;
@@ -75,7 +73,7 @@ contract Token {
         uint256 _value)
         public returns (bool succeess)
     {
-        require(_spender != address(0), "Address(0) not allowed");
+        require(_spender != address(0), "f/ Approve() : Address(0) not allowed");
 
         allowance[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);

@@ -50,7 +50,7 @@ describe("Exchange", () => {
 
             const result = await transaction.wait();
             event = result.events[1];
-        })
+        });
 
         describe("Success", () => {
             it("track token deposit", async () => {
@@ -65,13 +65,49 @@ describe("Exchange", () => {
                 expect(await event.args._balance).to.equal(amount);
                 expect(await event.args._amount).to.equal(amount);
             });
-        })
+        });
         describe("Failure", () => {
-            it("throw if token transfer's not approved by owner", async () => {
+            it("reject token transfer not approved by owner", async () => {
                 token1.connect(deployer).transfer(user1.address, 1);
                 await expect(exchange.connect(user1)
                     .depositToken(token1.address, 1)).to.be.reverted;
             });
+        });
+    });
+
+    describe("Withdraw token", () => {
+        let event;
+
+        beforeEach(async () => {
+            const approval = await token1.connect(user1)
+                .approve(exchange.address, amount);
+            const transaction = await exchange.connect(user1)
+                .depositToken(token1.address, amount);
+            const withdraw = await exchange.connect(user1)
+                .withdrawToken(token1.address, amount);
+            const result = await withdraw.wait();
+            event = result.events[1];
+        });
+
+        describe("Success", async () => {
+            it("withdraw token funds", async () => {
+                expect(await token1.balanceOf(exchange.address)).to.equal(tokens(0));
+                expect(await token1.balanceOf(user1.address)).to.equal(amount);
+                expect(await exchange.deposit(token1.address, user1.address)).to.equal(tokens(0));
+            });
+            it("emit Deposit event", async () => {
+                expect(await event.event).to.equal("Withdraw");
+                expect(await event.args._token).to.equal(token1.address);
+                expect(await event.args._user).to.equal(user1.address);
+                expect(await event.args._balance).to.equal(tokens(0));
+                expect(await event.args._amount).to.equal(amount);
+            });
+        });
+        describe("Failure", async () => {
+            it("reject withdraw when amount is greater than deposit", async () => {
+                await expect(exchange.connect(user1)
+                    .withdrawToken(token1.address, amount)).to.be.reverted;
+            })
         })
     })
 })

@@ -7,7 +7,8 @@ import {
   loadProvider,
   loadNetwork,
   loadAccount,
-  loadToken
+  loadTokens,
+  loadExchange
 } from '../store/interactions';
 
 function App() {
@@ -17,10 +18,14 @@ function App() {
   const loadBlockchainData = async () => {
     const provider = loadProvider(dispatch);
     const chainId = await loadNetwork(provider, dispatch);
-    await loadAccount(dispatch);
-    const STKAddress = config[chainId].StonksCoin.address;
+    await loadAccount(provider, dispatch);
 
-    await loadToken(provider, STKAddress, dispatch);
+    const StonksCoin = config[chainId].StonksCoin;
+    const CoinCoin = config[chainId].CoinCoin;
+    await loadTokens(provider, [StonksCoin.address, CoinCoin.address], dispatch);
+
+    const Exchange = config[chainId].Exchange;
+    await loadExchange(provider, Exchange.address, dispatch);
   }
 
   useEffect(() => {

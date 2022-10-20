@@ -134,7 +134,7 @@ contract Exchange {
             "f/ fillOrder() : Non-existant order can't be fulfilled");
         require(orderCancelled[_id] == false,
             "f/ fillOrder() : Cancelled order cannot be fulfilled");
-        require(orderFilled[_id] == false, 
+        require(orderFilled[_id] == false,
             "f/ fillOrder() : Order has already been fulfilled");
         require(order.orderingUser != msg.sender,
             "f/ fillOrder() : Ordering user and fulfilling user can't be the same");

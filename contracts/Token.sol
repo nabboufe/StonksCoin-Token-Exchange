@@ -37,8 +37,10 @@ contract Token {
         uint256 _value)
         public returns (bool success)
     {
-        require(balanceOf[msg.sender] >= _value, "f/ transfer() : Insufficient balance"); 
-        require(_to != address(0), "f/ transfer() : Address(0) not allowed");
+        require(balanceOf[msg.sender] >= _value,
+            "f/ transfer() : Insufficient balance"); 
+        require(_to != address(0),
+            "f/ transfer() : Address(0) not allowed");
 
         balanceOf[_to] += _value;
         balanceOf[msg.sender] -= _value;
@@ -53,12 +55,15 @@ contract Token {
         uint256 _value)
         public returns (bool succss)
     {
-        require(_from != address(0), "f/ transferFrom() : Address(0) not allowed");
-        require(_to != address(0), "f/ transferFrom() : Address(0) not allowed");
+        require(_from != address(0),
+            "f/ transferFrom() : Address(0) not allowed");
+        require(_to != address(0),
+            "f/ transferFrom() : Address(0) not allowed");
 
-        require(balanceOf[_from] >= _value, "f/ transferFrom() : Insufficient balance");
+        require(balanceOf[_from] >= _value,
+            "f/ transferFrom() : Insufficient balance");
         require(allowance[_from][_to] >= _value,
-            "f/ transferFrom() : Token transfer not allowed by owner");
+            "f/ transferFrom() : Token transfer not approved by owner");
 
         balanceOf[_to] += _value;
         balanceOf[_from] -= _value;

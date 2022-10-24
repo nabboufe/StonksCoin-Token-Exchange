@@ -21,18 +21,18 @@ async function main() {
 
     const stonksAddress = config[chainId].StonksCoin.address;
     const coincoinAddress = config[chainId].CoinCoin.address;
-    const mDaiAddress = config[chainId].mDai.address;
+    const mEthAddress = config[chainId].mEth.address;
     const exchangeAddress = config[chainId].Exchange.address;
 
     const StonksCoin = await ethers.getContractAt("Token", stonksAddress);
     const CoinCoin = await ethers.getContractAt("Token", coincoinAddress);
-    const mDai = await ethers.getContractAt("Token", mDaiAddress);
+    const mEth = await ethers.getContractAt("Token", mEthAddress);
     const exchange = await ethers.getContractAt("Exchange", exchangeAddress);
 
     console.log(
         `StonksCoin Token fetched: ${StonksCoin.address}\n` +
         `CoinCoin Token fetched: ${CoinCoin.address}\n` +
-        `mDai Token fetched: ${mDai.address}\n` +
+        `mEth Token fetched: ${mEth.address}\n` +
         `Exchange fetched: ${exchange.address}\n`
     );
 

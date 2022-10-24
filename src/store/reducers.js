@@ -98,7 +98,7 @@ export const exchange = (state = DEFAULT_EXCHANGE, action) => {
                 transferInProgress: true
             }
 
-        case 'TRANSFER_REQUEST':
+        case 'TRANSFER_SUCCESS':
             return {
                 ...state,
                 transaction: {
@@ -110,7 +110,7 @@ export const exchange = (state = DEFAULT_EXCHANGE, action) => {
                 events: [action.event, ...state.events] 
             }
 
-        case 'TRANSFER_REQUEST':
+        case 'TRANSFER_FAIL':
             return {
                 ...state,
                 transaction: {

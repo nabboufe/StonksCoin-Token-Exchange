@@ -14,9 +14,9 @@ async function main() {
   await coincoin.deployed();
   console.log(`CoinCoin deployed to : ${coincoin.address}`);
 
-  const mDai = await Token.deploy("mDai", "MD", "1000000");
+  const mDai = await Token.deploy("mEth", "mEth", "1000000");
   await mDai.deployed();
-  console.log(`mDai deployed to : ${mDai.address}`);
+  console.log(`mEth deployed to : ${mDai.address}`);
 
   const exchange = await Exchange.deploy(account[1].address, 5);
   await exchange.deployed();

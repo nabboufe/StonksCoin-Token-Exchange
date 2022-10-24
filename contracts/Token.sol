@@ -13,11 +13,18 @@ contract Token {
     event Transfer(
         address indexed _from,
         address indexed _to,
-        uint256 _value);
+        uint256 _value
+    );
+    event TransferFrom(
+        address _spender,
+        address indexed _from,
+        address indexed _to,
+        uint256 _value
+    );
     event Approval(
         address indexed _owner,
         address indexed spender,
-        uint256
+        uint256 _value
     );
 
     constructor(
@@ -69,7 +76,12 @@ contract Token {
         balanceOf[_from] -= _value;
         allowance[_from][_to] -= _value;
 
-        emit Transfer(_from, _to, _value);
+        emit TransferFrom(
+            msg.sender,
+            _from,
+            _to,
+            _value
+        );
         return true;
     }
 
@@ -78,11 +90,11 @@ contract Token {
         uint256 _value)
         public returns (bool succeess)
     {
-        require(_spender != address(0), "f/ Approve() : Address(0) not allowed");
+        require(_spender != address(0),
+            "f/ Approve() : Address(0) not allowed");
 
         allowance[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
-
         return true;
     }
 }

@@ -3,15 +3,11 @@ const { ethers } = require("hardhat");
 
 describe("Exchange", () => {
     let deployer, feeAccount, accounts, exchange, user1;
-    const addressZero = "0x0000000000000000000000000000000000000000";
     const feePercent = 5;
     const tokens = (n) =>
         BigInt(ethers.utils.parseUnits(n.toString(), 'ether'));
     
     const amount = tokens(1000);
-    const supply = 1000000;
-    const totalSupply = tokens(supply);
-
     
     beforeEach(async () => {
         accounts = await ethers.getSigners();
@@ -51,6 +47,7 @@ describe("Exchange", () => {
                 .depositToken(token1.address, amount);
 
             const result = await transaction.wait();
+            console.log("eventName:", result.events[0].event);
             event = result.events[1];
         });
 

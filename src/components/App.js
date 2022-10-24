@@ -1,69 +1,86 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
-import config from '../config.json';
+import config from "../config.json";
 
 import {
-  loadProvider,
-  loadNetwork,
-  loadAccount,
-  loadTokens,
-  loadExchange
-} from '../store/interactions';
+	loadProvider,
+  	loadNetwork,
+  	loadTokens,
+  	loadExchange,
+	loadAccount,
+	loadBalance,
+	suscribeToEvents
+} from "../store/interactions";
+
+import Navbar from "./Navbar.js";
+import Markets from "./Markets.js";
+import Balance from "./Balance.js";
 
 function App() {
 
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
-  const loadBlockchainData = async () => {
-    const provider = loadProvider(dispatch);
-    const chainId = await loadNetwork(provider, dispatch);
-    await loadAccount(provider, dispatch);
+	const loadBlockchainData = async () => {
+		// connect ethers to blockchain
+		const provider = loadProvider(dispatch);
+		// fetch current network chainId
+		const chainId = await loadNetwork(provider, dispatch);
 
-    const StonksCoin = config[chainId].StonksCoin;
-    const CoinCoin = config[chainId].CoinCoin;
-    await loadTokens(provider, [StonksCoin.address, CoinCoin.address], dispatch);
+		// load Token smart contract
+		const StonksCoin = config[chainId].StonksCoin;
+		const CoinCoin = config[chainId].CoinCoin;
+		const tokens = await loadTokens(provider, [StonksCoin.address, CoinCoin.address], dispatch);
 
-    const Exchange = config[chainId].Exchange;
-    await loadExchange(provider, Exchange.address, dispatch);
-  }
+		// load Exchange smart contract
+		const Exchange = config[chainId].Exchange;
+		const exchange = await loadExchange(provider, Exchange.address, dispatch);
 
-  useEffect(() => {
-    loadBlockchainData();
-  });
+		window.ethereum.on("chainChanged", () => {
+			window.location.reload();
+		});
 
-  return (
-    <div>
+		//fetch current account & balance from metamask when changed
+		window.ethereum.on("accountsChanged",  () => {
+			const account = loadAccount(provider, dispatch);
+			loadBalance(exchange, tokens, account, dispatch);
+		});
 
-      {/* Navbar */}
+		//listen to events
+		suscribeToEvents(exchange, dispatch);
+	}
 
-      <main className='exchange grid'>
-        <section className='exchange__section--left grid'>
+	useEffect(() => {
+    	loadBlockchainData();
+  	});
 
-          {/* Markets */}
+  	return (
+		<div>
 
-          {/* Balance */}
+			<Navbar />
 
-          {/* Order */}
+			<main className="exchange grid">
+				<section className="exchange__section--left grid">
 
-        </section>
-        <section className='exchange__section--right grid'>
+					<Markets />
+					<Balance />
+					{/* Order */}
 
-          {/* PriceChart */}
+				</section>
+				<section className="exchange__section--right grid">
 
-          {/* Transactions */}
+					{/* PriceChart */}
+					{/* Transactions */}
+					{/* Trades */}
+					{/* OrderBook */}
 
-          {/* Trades */}
+				</section>
+			</main>
 
-          {/* OrderBook */}
+			{/* Alert */}
 
-        </section>
-      </main>
-
-      {/* Alert */}
-
-    </div>
-  );
+		</div>
+	);
 }
 
 export default App;

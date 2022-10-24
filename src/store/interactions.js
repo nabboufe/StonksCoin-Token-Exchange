@@ -29,15 +29,17 @@ export const loadAccount = async (provider, dispatch) => {
 }
 
 export const loadTokens = async (provider, addresses, dispatch) => {
-    let token = new ethers.Contract(addresses[0], TOKEN_ABI, provider);
-    let symbol = await token.symbol();
-    dispatch({ type: 'TOKEN_1_LOADED', token, symbol });
+    let token1 = new ethers.Contract(addresses[0], TOKEN_ABI, provider);
+    let symbol1 = await token1.symbol();
+    let token2 = new ethers.Contract(addresses[1], TOKEN_ABI, provider);
+    let symbol2 = await token2.symbol();
+    dispatch({
+        type: 'TOKEN_LOADED',
+        token: [token1, token2],
+        symbol: [symbol1, symbol2]
+    });
 
-    token = new ethers.Contract(addresses[1], TOKEN_ABI, provider);
-    symbol = await token.symbol();
-    dispatch({ type: 'TOKEN_2_LOADED', token, symbol });
-
-    return token;
+    return [token1, token2];
 }
 
 export const loadExchange = async (provider, address, dispatch) => {
@@ -45,4 +47,53 @@ export const loadExchange = async (provider, address, dispatch) => {
     dispatch({ type: 'EXCHANGE_LOADED', exchange });
 
     return exchange;
+}
+
+export const loadBalance = async (exchange, tokens, account, dispatch) => {
+    let walletBalance = await tokens[0].balanceOf(account);
+    let depositBalance = await exchange.deposit(tokens[0].address, account);
+    walletBalance = ethers.utils.formatUnits(walletBalance, 18);
+    depositBalance = ethers.utils.formatUnits(depositBalance, 18);
+
+    dispatch({ type: "TOKEN1_BALANCE_LOADED", walletBalance });
+    dispatch({ type: "EXCHANGE_TOKEN1_BALANCE_LOADED", depositBalance });
+
+    walletBalance = await tokens[1].balanceOf(account);
+    depositBalance = await exchange.deposit(tokens[1].address, account);
+    walletBalance = ethers.utils.formatUnits(walletBalance, 18);
+    depositBalance = ethers.utils.formatUnits(depositBalance, 18);
+
+    dispatch({ type: "TOKEN2_BALANCE_LOADED", walletBalance });
+    dispatch({ type: "EXCHANGE_TOKEN2_BALANCE_LOADED", depositBalance });
+}
+
+export const suscribeToEvents = (exchange, dispatch) => {
+    exchange.on("Deposit", (token, user, amount, balance, event ) => {
+        dispatch({ type: "TRANSFER_SUCCESS", event });
+    });
+}
+
+export const transfertTokens = async (
+        provider,
+        exchange,
+        transferType,
+        token,
+        _amount,
+        dispatch) => {
+
+    dispatch({ type: "TRANSFER_REQUEST" });
+
+    try {
+        const signer = await provider.getSigner();
+        let amount = ethers.utils.parseUnits(_amount.toString(), 18);
+
+        let transaction = await token.connect(signer).approve(exchange.address, amount);
+        await transaction.wait();
+        
+        transaction = await exchange.connect(signer).depositToken(token.address, amount);
+        await transaction.wait();
+    } catch (error) {
+        console.error(error);
+        dispatch({ type: "TRANSFER_FAIL" });
+    }
 }

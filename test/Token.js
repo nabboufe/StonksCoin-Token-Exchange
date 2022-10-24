@@ -128,7 +128,7 @@ describe("Token", () => {
 
             beforeEach(async () => {
                 amount = 1000;
-                _value = tokens("1000");
+                _value = tokens(amount);
                 transaction = await token.connect(deployer)
                     .transferFrom(deployer.address, receiver.address, _value);
                 result = await transaction.wait();
@@ -145,8 +145,8 @@ describe("Token", () => {
 
                 expect(event.args._from).to.equal(deployer.address);
                 expect(event.args._to).to.equal(receiver.address);
-                expect(event.args[2]).to.equal(_value);
-                expect(event.event).to.equal("Transfer");
+                expect(event.args[3]).to.equal(_value);
+                expect(event.event).to.equal("TransferFrom");
             });
             it("reduces allowance", async () => {
                 expect(await token.allowance(deployer.address,

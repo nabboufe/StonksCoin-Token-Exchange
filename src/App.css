@@ -371,6 +371,12 @@ small {
 	margin: 0 0.5em 0 0;
 }
 
+.currency {
+	width: 20px;
+	height: auto;
+	margin: 0 0.5em 0 0;
+}
+
 .identicon {
 	margin: 0 0 0 0.60em;
 }
@@ -500,6 +506,16 @@ input {
 
 	outline: none;
 	position: relative;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 input::placeholder {

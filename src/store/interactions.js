@@ -74,15 +74,17 @@ export const suscribeToEvents = (exchange, dispatch) => {
     exchange.on("Withdraw", (token, user, amount, balance, event ) => {
         dispatch({ type: "TRANSFER_SUCCESS", event });
     });
+    exchange.on("Order", (id, user, tokenGet, amountGet, tokenGive,
+            amountGive, timestamp, event) => {
+
+        const order = event.args;
+        dispatch({ type: "ORDER_SUCCESS", order, event });
+    });
 }
 
 export const transfertTokens = async (
-        provider,
-        exchange,
-        transferType,
-        token,
-        _amount,
-        dispatch) => {
+        provider, exchange, transferType,
+        token, _amount, dispatch) => {
 
     let transaction;
     dispatch({ type: "TRANSFER_REQUEST" });
@@ -104,5 +106,49 @@ export const transfertTokens = async (
     catch (error) {
         console.error(error);
         dispatch({ type: "TRANSFER_FAIL" });
+    }
+}
+
+export const makeBuyOrder = async (
+        provider, exchange, tokens, order, dispatch) => {
+    
+    const tokenGive = tokens[1].address;
+    const amountGive = ethers.utils.parseUnits((order.amount * order.price).toString(), 18)
+
+    const tokenGet = tokens[0].address;
+    const amountGet = ethers.utils.parseUnits(order.amount.toString(), 18);
+
+    dispatch({ type: "ORDER_REQUEST" });
+
+    try {
+        const signer = await provider.getSigner();
+        const transaction = await exchange.connect(signer)
+            .makeOrder(tokenGive, amountGive, tokenGet, amountGet);
+        await transaction.wait();
+    } catch (error) {
+        console.error(error);
+        dispatch({ type: "ORDER_FAIL" });
+    }
+}
+
+export const makeSellOrder = async (
+        provider, exchange, tokens, order, dispatch) => {
+
+    const tokenGive = tokens[0].address;
+    const amountGive = ethers.utils.parseUnits(order.amount.toString(), 18)
+
+    const tokenGet = tokens[1].address;
+    const amountGet = ethers.utils.parseUnits((order.amount * order.price).toString(), 18);
+
+    dispatch({ type: "ORDER_REQUEST" });
+
+    try {
+        const signer = await provider.getSigner();
+        const transaction = await exchange.connect(signer)
+            .makeOrder(tokenGive, amountGive, tokenGet, amountGet);
+        await transaction.wait();
+    } catch (error) {
+        console.error(error);
+        dispatch({ type: "ORDER_FAIL" });
     }
 }

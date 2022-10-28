@@ -282,7 +282,7 @@ small {
 
 	padding: 0.75em 1.75em;
 	margin: 0.75em;
-	min-height: 325px;
+	min-height: 400px;
 
 	grid-column-start: 1;
 	grid-column-end: 13;
@@ -373,6 +373,12 @@ small {
 
 .currency {
 	width: 20px;
+	height: auto;
+	margin: 0 0.5em 0 0;
+}
+
+.stonked {
+	width: 70px;
 	height: auto;
 	margin: 0 0.5em 0 0;
 }

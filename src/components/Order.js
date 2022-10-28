@@ -18,7 +18,6 @@ const Order = () => {
         e.preventDefault();
 
         if (switchState[2] === "Buy") {
-            console.log('buy');
             makeBuyOrder(
                 provider,
                 exchange,
@@ -29,7 +28,6 @@ const Order = () => {
             );
         }
         else if (switchState[2] === "Sell") {
-            console.log('sell');
             makeSellOrder(
                 provider,
                 exchange,

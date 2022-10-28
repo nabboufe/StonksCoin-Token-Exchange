@@ -10,13 +10,17 @@ import {
   	loadExchange,
 	loadAccount,
 	loadBalance,
-	suscribeToEvents
+	suscribeToEvents,
+	loadAllOrders
 } from "../store/interactions";
 
 import Navbar from "./Navbar.js";
 import Markets from "./Markets.js";
 import Balance from "./Balance.js";
 import Order from "./Order.js";
+import OrderBook from "./OrderBook.js";
+import PriceChart from "./PriceChart.js";
+import Trades from "./Trades.js";
 
 function App() {
 
@@ -47,6 +51,9 @@ function App() {
 			loadBalance(exchange, tokens, account, dispatch);
 		});
 
+		//Fetch all orders: opened, filled, cancelled
+		loadAllOrders(provider, exchange, dispatch);
+
 		//listen to events
 		suscribeToEvents(exchange, dispatch);
 	}
@@ -70,10 +77,10 @@ function App() {
 				</section>
 				<section className="exchange__section--right grid">
 
-					{/* PriceChart */}
+					<PriceChart />
 					{/* Transactions */}
-					{/* Trades */}
-					{/* OrderBook */}
+					<Trades />
+					<OrderBook />
 
 				</section>
 			</main>

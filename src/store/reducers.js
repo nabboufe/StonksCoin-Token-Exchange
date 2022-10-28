@@ -1,4 +1,4 @@
-export const provider = (state = {}, action) => {
+export const provider = (state = { account: null }, action) => {
     switch (action.type) {
         case 'PROVIDER_LOADED':
             return {
@@ -64,7 +64,9 @@ const DEFAULT_EXCHANGE = {
     contract: {},
     transaction: { isSuccessful: false, isError: false },
     events: [],
-    allOrders: { loaded: false, data: [] }
+    allOrders: { loaded: false, data: [] },
+    cancelledOrders: { loaded: false, data: [] },
+    filledOrders: { loaded: false, data: [] }
 };
 
 export const exchange = (state = DEFAULT_EXCHANGE, action) => {
@@ -86,6 +88,31 @@ export const exchange = (state = DEFAULT_EXCHANGE, action) => {
                 ...state,
                 loaded: true,
                 balances: [...state.balances, action.depositBalance]
+            }
+
+        case "CANCELLED_ORDERS_LOADED":
+            return {
+                ...state,
+                cancelledOrders: {
+                    loaded: true,
+                    data: action.cancelledOrders
+                }
+            }
+        case "ALL_ORDERS_LOADED":
+            return {
+                ...state,
+                allOrders: {
+                    loaded: true,
+                    data: action.allOrders
+                }
+            }
+        case "FILLED_ORDERS_LOADED":
+            return {
+                ...state,
+                filledOrders: {
+                    loaded: true,
+                    data: action.filledOrders
+                }
             }
 
         case 'TRANSFER_REQUEST':
@@ -145,7 +172,7 @@ export const exchange = (state = DEFAULT_EXCHANGE, action) => {
         case 'ORDER_SUCCESS':
             let data;
             let index = state.allOrders.data
-                .findIndex(order => order.id === action.order.id);
+                .findIndex(order => order.id.toString() === action.order.id.toString());
 
             if(index === -1) {
                 data = [...state.allOrders.data, action.order]

@@ -33,7 +33,7 @@ const Trades = () => {
                                 <img src={sort} alt="Sort" />                            
                             </th>
                         </tr> :
-                        <div></div>
+                        ""
                     }
                 </thead>
                 <tbody>

@@ -8,6 +8,7 @@ const GREEN = "#25CE8F";
 const RED = "#F45353";
 
 const tokens = state => get(state, "tokens.contracts");
+const account = state => get(state, "provider.account");
 const cancelledOrders = state => get(state, "exchange.cancelledOrders.data", []);
 const filledOrders = state => get(state, "exchange.filledOrders.data", []);
 const allOrders = state => get(state, "exchange.allOrders.data", []);
@@ -27,6 +28,52 @@ const openOrders = state => {
 
     return openOrders;
 }
+
+const decorateMyOpenOrder = (order, tokens) => {
+    const orderType = order._tokenGive === 
+        tokens[1].address ? "buy" : "sell";
+    
+    return ({
+        ...order,
+        orderTypeClass: (orderType === "buy" ? GREEN : RED),
+        orderFillAction: (orderType === "buy" ? "sell" : "buy")
+    });
+}
+
+const decorateMyOpenOrders = (orders, tokens) => {
+    return (
+        orders.map((order) => {
+            order = decorateOrder(order, tokens);
+            order = decorateMyOpenOrder(order, tokens);
+            return(order);
+        })
+    );
+}
+
+export const myOpenOrdersSelector = createSelector(
+        account,
+        tokens,
+        openOrders,
+        (account, tokens, orders) => {
+    
+    if (!tokens[0] || !tokens[1]) { return ; }
+
+    console.log(orders, account);
+    orders = orders.filter((order) => order.orderingUser === account);
+    console.log(orders);    
+
+    orders = orders.filter(
+        (order) =>  order._tokenGive === tokens[0].address ||
+                    order._tokenGive === tokens[1].address);
+    orders = orders.filter(
+        (order) =>  order._tokenGet === tokens[0].address ||
+                    order._tokenGet === tokens[1].address);
+  
+    orders = decorateMyOpenOrders(orders, tokens);
+    orders = orders.sort((a, b) => b.timestamp - a.timestamp);
+
+    return orders;
+})
 
 const decorateOrder = (order, tokens) => {
     let token0Amount, token1Amount;
@@ -111,7 +158,6 @@ const buildGraphData = (orders) => {
         moment.unix(order.timestamp).startOf("minutes").format()
     )
     const times = Object.keys(orders);
-    console.log(times);
     const graphData = times.map((time) => {
 
         const group = orders[time];

@@ -97,12 +97,11 @@ export const myOpenOrdersSelector = createSelector(
 })
 
 const decorateMyFilledOrder = (order, account, tokens) => {
-    const myOrder = order.orderingUser
-        === account? true : false;
+    const myOrder = order.orderingUser === account;
     const orderType = myOrder ?
-        (order.tokenGive === tokens[1].address ? "buy" : "sell") :
-        (order.tokenGive === tokens[1].address ? "sell" : "buy");
-    
+        (order._tokenGive === tokens[1].address ? "buy" : "sell") :
+        (order._tokenGive === tokens[1].address ? "sell" : "buy");
+
     return ({
         ...order,
         orderType,
@@ -203,7 +202,7 @@ export const orderBookSelector = createSelector(
 
 const buildGraphData = (orders) => {
     orders = groupBy(orders, (order) =>
-        moment.unix(order.timestamp).startOf("minutes").format()
+        moment.unix(order.timestamp).startOf("days").format()
     )
     const times = Object.keys(orders);
     const graphData = times.map((time) => {

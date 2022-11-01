@@ -70,6 +70,8 @@ const DEFAULT_EXCHANGE = {
 };
 
 export const exchange = (state = DEFAULT_EXCHANGE, action) => {
+    let index, data;
+
     switch (action.type) {
         case 'EXCHANGE_LOADED':
             return {
@@ -170,16 +172,14 @@ export const exchange = (state = DEFAULT_EXCHANGE, action) => {
                 transferInProgress: false
             }
         case 'ORDER_SUCCESS':
-            let data;
-            let index = state.allOrders.data
+            index = state.allOrders.data
                 .findIndex(order => order.id.toString() === action.order.id.toString());
 
             if(index === -1) {
-                data = [...state.allOrders.data, action.order]
+                data = [...state.allOrders.data, action.order];
             } else {
-                data = state.allOrders.data
+                data = state.allOrders.data;
             }
-
             return {
                 ...state,
                 transaction: {
@@ -194,6 +194,85 @@ export const exchange = (state = DEFAULT_EXCHANGE, action) => {
                     data,
                 },
                 events: [action.event, ...state.events]
+            }
+
+        case 'CANCEL_REQUEST':
+            return {
+                ...state,
+                transaction: {
+                    transactionType: 'Cancel',
+                    isPending: true,
+                    isSuccessful: false
+                },
+            }
+        case 'CANCEL_SUCCESS':
+            return {
+                ...state,
+                transaction: {
+                    transactionType: 'Cancel',
+                    isPending: false,
+                    isSuccessful: true
+                },
+                cancelledOrders: {
+                    ...state.cancelledOrders,
+                    data: [
+                        ...state.cancelledOrders.data,
+                        action.order
+                    ]
+                },
+                events: [action.event, ...state.events]
+            }
+        case 'CANCEL_FAIL':
+            return {
+                ...state,
+                transaction: {
+                    transactionType: 'Cancel',
+                    isPending: false,
+                    isSuccessful: false,
+                    isError: true
+                },
+            }
+
+        case 'TRADE_REQUEST':
+            return {
+                ...state,
+                transaction: {
+                    transactionType: 'Trade',
+                    isPending: true,
+                    isSuccessful: false
+                },
+            }
+        case 'TRADE_SUCCESS':
+            index = state.filledOrders.data
+                .findIndex(order => order.id.toString() === action.order.id.toString());
+
+            if(index === -1) {
+                data = [...state.filledOrders.data, action.order];
+            } else {
+                data = state.filledOrders.data;
+            }
+            return {
+                ...state,
+                transaction: {
+                    transactionType: 'Trade',
+                    isPending: false,
+                    isSuccessful: true
+                },
+                filledOrders: {
+                    ...state.filledOrders,
+                    data
+                },
+                events: [action.event, ...state.events]
+            }
+        case 'TRADE_FAIL':
+            return {
+                ...state,
+                transaction: {
+                    transactionType: 'Trade',
+                    isPending: false,
+                    isSuccessful: false,
+                    isError: true
+                },
             }
 
         default:

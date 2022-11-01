@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import {
     myOpenOrdersSelector,
     myFilledOrderSelector
 } from "../store/selectors";
+import { cancelOrder } from "../store/interactions";
 
 import Banner from "./Banner";
 
@@ -17,8 +18,11 @@ const Transactions = () => {
     const myOpenOrders = useSelector(myOpenOrdersSelector);
     const myFilledOrders = useSelector(myFilledOrderSelector);
 
-    console.log(myFilledOrders);
-
+    const provider = useSelector(state => state.provider.connection);
+    const exchange = useSelector(state => state.exchange.contract);
+    
+    const dispatch = useDispatch();
+    
     const switchButton = (e) => {
         if (e.target.innerText === "Orders") {
             if (switchState[0] !== "tab--active") {
@@ -30,6 +34,10 @@ const Transactions = () => {
                 setSwitchState(["", "tab--active", "Trades"]);
             }
         }
+    }
+
+    const cancelHandler = (order) => {
+        cancelOrder(provider, exchange, order.id, dispatch)
     }
 
     return (
@@ -70,7 +78,7 @@ const Transactions = () => {
                                 <th></th>
                                 </tr>
                             </thead>
-                        : ""}
+                        : <thead></thead>}
 
 
                         <tbody>
@@ -86,11 +94,16 @@ const Transactions = () => {
                                                 </td>
 
                                                 <td>
-                                                    {"  "}
+                                                    <button
+                                                        className="button--sm"
+                                                        onClick={() => cancelHandler(order)}
+                                                    >
+                                                        Cancel
+                                                    </button>
                                                 </td>
                                             </tr>);
                                 }) :
-                                <Banner text="No order available" />
+                                <Banner text="No open order" />
                             }
                         </tbody>
                     </table>
@@ -137,14 +150,14 @@ const Transactions = () => {
                                         {symbols[0] && `${symbols[0]}/${symbols[1]}`}
                                         <img src={sort} alt="Sort" />
                                     </th>
-                                </tr> : ""}
+                                </tr> : <tr></tr>}
                         </thead>
 
                         <tbody>
                             {myFilledOrders && myFilledOrders[0] ?
                                 myFilledOrders.map((order, index) => {
                                     return (
-                                        <tr>
+                                        <tr key={index}>
                                             <td>
                                                 {order.formattedTimestamp}
                                             </td>
@@ -156,7 +169,7 @@ const Transactions = () => {
                                             </td>
                                         </tr>
                                     );
-                                }) : ""}
+                                }) : <Banner text="No open order" />}
                         </tbody>
                     </table>
 

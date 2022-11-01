@@ -1,13 +1,21 @@
-import { useSelector } from "react-redux";
-//import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import { orderBookSelector } from "../store/selectors";
+import { makeTrade } from "../store/interactions";
 
 import sort from "../assets/sort.svg";
 
 const OrderBook = () => {
+    const provider = useSelector(state => state.provider.connection);
+    const exchange = useSelector(state => state.exchange.contract);
     const symbols = useSelector(state => state.tokens.symbols);
     const orderBook = useSelector(orderBookSelector);
+
+    const dispatch = useDispatch();
+
+    const fillOrderHandler = (order) => {
+        makeTrade(provider, exchange, order.id, dispatch);
+    }
 
     return (
         <div className="component exchange__orderbook">
@@ -44,7 +52,7 @@ const OrderBook = () => {
                             {orderBook &&
                                 orderBook.sellOrders.slice(-10, -1).map((order, index) => {
                                     return (
-                                        <tr key={index}>
+                                        <tr key={index} onClick={() => fillOrderHandler(order)}>
                                             <td style={{ color: order.orderTypeClass }}>
                                                 {order.token0Amount}
                                             </td>
@@ -92,9 +100,9 @@ const OrderBook = () => {
                             {orderBook &&
                                 orderBook.buyOrders.slice(-10, -1).map((order, index) => {
                                     return (
-                                        <tr key={index}>
+                                        <tr key={index} onClick={() => fillOrderHandler(order)}>
                                             <td style={{ color: order.orderTypeClass }}>
-                                                {order.token1Amount}
+                                                {order.token0Amount}
                                             </td>
 
                                             <td style={{ color: order.orderTypeClass }}>
@@ -102,7 +110,7 @@ const OrderBook = () => {
                                             </td>
 
                                             <td style={{ color: order.orderTypeClass }}>
-                                                {order.token0Amount}
+                                                {order.token1Amount}
                                             </td>
                                         </tr>
                                     )

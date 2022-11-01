@@ -9,6 +9,7 @@ const RED = "#F45353";
 
 const tokens = state => get(state, "tokens.contracts");
 const account = state => get(state, "provider.account");
+const events = state => get(state, "exchange.events");
 const cancelledOrders = state => get(state, "exchange.cancelledOrders.data", []);
 const filledOrders = state => get(state, "exchange.filledOrders.data", []);
 const allOrders = state => get(state, "exchange.allOrders.data", []);
@@ -28,6 +29,12 @@ const openOrders = state => {
 
     return openOrders;
 }
+
+export const myEventsSelector = createSelector(account, events,
+        (account, events) => {
+    events = events.filter((event) => event.args.fulfillingUser === account);
+    return events;
+})
 
 const decorateOrder = (order, tokens) => {
     let token0Amount, token1Amount;

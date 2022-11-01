@@ -90,7 +90,6 @@ export const suscribeToEvents = (exchange, dispatch) => {
             _tokenGive, amountGive, _tokenGet, _amountGet, event) => {
 
         const order = event.args;
-        console.log(event, order);
         dispatch({ type: "TRADE_SUCCESS", order, event });
     });
 }

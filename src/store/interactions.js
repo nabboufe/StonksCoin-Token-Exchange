@@ -68,17 +68,29 @@ export const loadBalance = async (exchange, tokens, account, dispatch) => {
 }
 
 export const suscribeToEvents = (exchange, dispatch) => {
-    exchange.on("Deposit", (token, user, amount, balance, event ) => {
+    exchange.on("Deposit", (_token, _user, _amount, _balance, event ) => {
         dispatch({ type: "TRANSFER_SUCCESS", event });
     });
-    exchange.on("Withdraw", (token, user, amount, balance, event ) => {
+    exchange.on("Withdraw", (_token, _user, _amount, _balance, event ) => {
         dispatch({ type: "TRANSFER_SUCCESS", event });
     });
-    exchange.on("Order", (id, user, tokenGet, amountGet, tokenGive,
-            amountGive, timestamp, event) => {
+    exchange.on("Order", (orderingUser, timestamp, id, _tokenGive,
+        _amountGive, _tokenGet, _amountGet, event) => {
 
         const order = event.args;
         dispatch({ type: "ORDER_SUCCESS", order, event });
+    });
+    exchange.on("Cancel", (orderingUser, timestamp, id, _tokenGive,
+            _amountGive, _tokenGet, _amountGet, event) => {
+
+        const order = event.args;
+        dispatch({ type: "CANCEL_SUCCESS", order, event });
+    });
+    exchange.on("Trade", (orderingUser, fulfillingUser, timestamp, id,
+            _tokenGive, amountGive, _tokenGet, _amountGet, event) => {
+
+        const order = event.args;
+        dispatch({ type: "TRADE_SUCCESS", order, event });
     });
 }
 
@@ -168,4 +180,30 @@ export const loadAllOrders = async (provider, exchange, dispatch) => {
     const orderStream = await exchange.queryFilter("Order", 0, block);
     const allOrders = orderStream.map(event => event.args);
     dispatch({ type: "ALL_ORDERS_LOADED", allOrders });
+}
+
+export const cancelOrder = async (provider, exchange, ID, dispatch) => {
+    dispatch({ type: "CANCEL_REQUEST" });
+
+    try {
+        const signer = await provider.getSigner();
+        const transaction = await exchange.connect(signer).cancelOrder(ID);
+        await transaction.wait();
+    } catch (error) {
+        console.error(error);
+        dispatch({ type: "CANCEL_FAIL" });
+    }
+}
+
+export const makeTrade = async (provider, exchange, ID, dispatch) => {
+    dispatch({ type: "TRADE_REQUEST" });
+
+    try {
+        const signer = await provider.getSigner();
+        const transaction = await exchange.connect(signer).fillOrder(ID);
+        await transaction.wait();
+    } catch (error) {
+        console.error(error);
+        dispatch({ type: "TRADE_FAIL" })
+    }
 }

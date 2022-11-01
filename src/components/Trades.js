@@ -30,10 +30,9 @@ const Trades = () => {
                             <th>
                                 {symbols ? `${symbols[0]}/${symbols[1]}`
                                     : "undefined/undefined"}
-                                <img src={sort} alt="Sort" />                            
+                                <img src={sort} alt="Sort" />
                             </th>
-                        </tr> :
-                        ""
+                        </tr> : <tr></tr>
                     }
                 </thead>
                 <tbody>

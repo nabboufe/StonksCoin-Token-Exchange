@@ -22,6 +22,7 @@ import OrderBook from "./OrderBook.js";
 import PriceChart from "./PriceChart.js";
 import Trades from "./Trades.js";
 import Transactions from "./Transactions.js";
+import Alert from "./Alert.js";
 
 function App() {
 
@@ -86,7 +87,7 @@ function App() {
 				</section>
 			</main>
 
-			{/* Alert */}
+			<Alert />
 
 		</div>
 	);

@@ -36,10 +36,10 @@ function App() {
 
 		// load Token smart contract
 		const StonksCoin = config[chainId].StonksCoin;
-		const MATIC = config[chainId].MATIC;
+		const CoinCoin = config[chainId].CoinCoin;
 
 		const tokens = await loadTokens(provider,
-			[StonksCoin.address, MATIC.address], dispatch);
+			[StonksCoin.address, CoinCoin.address], dispatch);
 
 		// load Exchange smart contract
 		const Exchange = config[chainId].Exchange;

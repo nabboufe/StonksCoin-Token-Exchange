@@ -20,7 +20,7 @@ const Transactions = () => {
 
     const provider = useSelector(state => state.provider.connection);
     const exchange = useSelector(state => state.exchange.contract);
-    
+
     const dispatch = useDispatch();
     
     const switchButton = (e) => {

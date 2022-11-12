@@ -14,7 +14,7 @@ export const loadProvider = (dispatch) => {
 export const loadNetwork = async (provider, dispatch) => {
     const { chainId } = await provider.getNetwork();
     dispatch({ type: 'NETWORK_LOADED', chainId });
-
+    
     return chainId;
 }
 
@@ -105,7 +105,7 @@ export const transfertTokens = async (
     let transaction;
     dispatch({ type: "TRANSFER_REQUEST" });
  
-    console.log(_amount.toString());
+    console.log("ah oui oui", _amount.toString());
 
     try {
         const signer = await provider.getSigner();

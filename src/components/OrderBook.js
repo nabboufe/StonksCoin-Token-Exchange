@@ -30,7 +30,7 @@ const OrderBook = () => {
                     (<table className='exchange__orderbook--sell'>
                         
                         <caption>Selling</caption>
-                        
+
                         <thead>
                             <tr>
                                 <th>

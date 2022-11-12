@@ -26,8 +26,8 @@ const Markets = () => {
                     id="market"
                     onChange={marketHandler}
                 >
-                    <option value={`${STKAddress},${MATICAddress}`}>STK / MATIC</option>
                     <option value={`${STKAddress},${CCAddress}`}>STK / CC</option>
+                    <option value={`${STKAddress},${MATICAddress}`}>STK / mEth</option>
                 </select>
             <hr />
         </div>

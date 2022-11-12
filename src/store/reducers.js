@@ -1,4 +1,4 @@
-export const provider = (state = { account: null }, action) => {
+export const provider = (state = { account: null, chainId: 31337 }, action) => {
     switch (action.type) {
         case 'PROVIDER_LOADED':
             return {

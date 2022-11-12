@@ -5,11 +5,11 @@ import { loadTokens } from "../store/interactions";
 
 const Markets = () => {
     const provider = useSelector(state => state.provider.connection);
-    const chainId = 31337;//useSelector(state => state.provider.chainId);
+    const chainId = useSelector(state => state.provider.chainId);
 
     const STKAddress = config[chainId].StonksCoin.address;
     const CCAddress = config[chainId].CoinCoin.address;
-    const mEthAddress = config[chainId].mEth.address;
+    const MATICAddress = config[chainId].MATIC.address;
 
     const dispatch = useDispatch();
     const marketHandler = async (event) => {
@@ -26,8 +26,8 @@ const Markets = () => {
                     id="market"
                     onChange={marketHandler}
                 >
+                    <option value={`${STKAddress},${MATICAddress}`}>STK / MATIC</option>
                     <option value={`${STKAddress},${CCAddress}`}>STK / CC</option>
-                    <option value={`${STKAddress},${mEthAddress}`}>STK / mEth</option>
                 </select>
             <hr />
         </div>

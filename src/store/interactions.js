@@ -1,8 +1,10 @@
 import { ethers } from 'ethers';
+
 import TOKEN_ABI from '../abis/Token.json';
 import EXCHANGE_ABI from '../abis/Exchange.json';
 
 export const loadProvider = (dispatch) => {
+    console.log(window.ethereum);
     const connection = new ethers.providers.Web3Provider(window.ethereum);
     dispatch({ type: 'PROVIDER_LOADED', connection });
 
@@ -31,8 +33,10 @@ export const loadAccount = async (provider, dispatch) => {
 export const loadTokens = async (provider, addresses, dispatch) => {
     let token1 = new ethers.Contract(addresses[0], TOKEN_ABI, provider);
     let symbol1 = await token1.symbol();
+
     let token2 = new ethers.Contract(addresses[1], TOKEN_ABI, provider);
     let symbol2 = await token2.symbol();
+
     dispatch({
         type: 'TOKEN_LOADED',
         token: [token1, token2],
@@ -101,17 +105,19 @@ export const transfertTokens = async (
     let transaction;
     dispatch({ type: "TRANSFER_REQUEST" });
  
+    console.log(_amount.toString());
+
     try {
         const signer = await provider.getSigner();
         const amount = ethers.utils.parseUnits(_amount.toString(), 18);
 
         if (transferType === "Deposit") {
-            transaction = await token.connect(signer).approve(exchange.address, amount);
+            transaction = await token.connect(signer).approve(exchange.address, amount, {gasLimit: 5000000});
             await transaction.wait();
-            transaction = await exchange.connect(signer).depositToken(token.address, amount);
+            transaction = await exchange.connect(signer).depositToken(token.address, amount, {gasLimit: 5000000});
         } 
         else if (transferType === "Withdraw") {
-            transaction = await exchange.connect(signer).withdrawToken(token.address, amount);
+            transaction = await exchange.connect(signer).withdrawToken(token.address, amount, {gasLimit: 5000000});
         }
         await transaction.wait();
     } 
@@ -168,16 +174,16 @@ export const makeSellOrder = async (
 export const loadAllOrders = async (provider, exchange, dispatch) => {
     const block = await provider.getBlockNumber();
 
-    const cancelStream = await exchange.queryFilter("Cancel", 0, block);
+    const cancelStream = await exchange.queryFilter("Cancel", block - 3000, block);
     const cancelledOrders = cancelStream.map(event => event.args);
     dispatch({ type: "CANCELLED_ORDERS_LOADED", cancelledOrders });
 
-    const tradeStream = await exchange.queryFilter("Trade", 0, block);
+    const tradeStream = await exchange.queryFilter("Trade", block - 3000, block);
     const filledOrders = tradeStream.map(event => event.args);
     dispatch({ type: "FILLED_ORDERS_LOADED", filledOrders });
 
 
-    const orderStream = await exchange.queryFilter("Order", 0, block);
+    const orderStream = await exchange.queryFilter("Order", block - 3000, block);
     const allOrders = orderStream.map(event => event.args);
     dispatch({ type: "ALL_ORDERS_LOADED", allOrders });
 }

@@ -82,7 +82,7 @@ const Order = () => {
                 <input
                     onChange={(e) => setAmount({ value : e.target.value })}
                     value={amount.value === 0 ? "" : amount.value}
-                    type="number"
+                    type="text"
                     id="amount"
                     placeholder="0.000"
                 />
@@ -93,7 +93,7 @@ const Order = () => {
                 <input
                     onChange={(e) => setPrice({ value : e.target.value })}
                     value={price.value === 0 ? "" : price.value}
-                    type="number"
+                    type="text"
                     id="price"
                     min="0"
                     placeholder="0.000"

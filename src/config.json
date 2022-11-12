@@ -9,12 +9,39 @@
         "CoinCoin": {
             "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
         },
-        "mEth": {
+        "MATIC": {
             "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
         },
         "explorerURL": "#"
     },
-    "42": {
-        "explorerURL": "https://kovan.etherscan.io/"
+    "5": {
+        "Exchange": {
+            "address": "0xD098210Bb4a595a52ee16F4E0fb97EB5FC8cb12e"
+        },
+        "StonksCoin": {
+            "address": "0x57B9543C94289a59b1509F8416b19b430009df88"
+        },
+        "CoinCoin": {
+            "address": "0x9a9c9c807d55044cD999B29614EB496f20cF03CC"
+        },
+        "MATIC": {
+            "address": "0x7908ae16dbC0391b73Ee628Baa57aa0408A5439d"
+        },
+        "explorerURL": "https://goerli.etherscan.io/"
+    },
+    "137": {
+        "Exchange": {
+            "address": "0xD098210Bb4a595a52ee16F4E0fb97EB5FC8cb12e"
+        },
+        "StonksCoin": {
+            "address": "0x57B9543C94289a59b1509F8416b19b430009df88"
+        },
+        "CoinCoin": {
+            "address": "0x9a9c9c807d55044cD999B29614EB496f20cF03CC"
+        },
+        "MATIC": {
+            "address": "0x7908ae16dbC0391b73Ee628Baa57aa0408A5439d"
+        },
+        "explorerURL": "https://polygonscan.com/"
     }
 }

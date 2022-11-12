@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import { loadBalance, transfertTokens } from "../store/interactions";
 
 const Balance = () => {
-    const [tokenOneAmount, setTokenOneAmount] = useState(0);
-    const [tokenTwoAmount, setTokenTwoAmount] = useState(0);
+    const [tokenOneAmount, setTokenOneAmount] = useState("");
+    const [tokenTwoAmount, setTokenTwoAmount] = useState("");
     const [tabsStyle, setTabsStyle] = useState(["tab--active", "", "Deposit"]);
 
     const provider = useSelector(state => state.provider.connection);
@@ -31,10 +31,12 @@ const Balance = () => {
     }, [exchange, tokens, account, transferInProgress, dispatch]);
 
     const tokenChange = async (e, token) => {
+        let nan = isNaN(e.target.value);
+
         if (token.address === tokens[0].address) {
-            setTokenOneAmount({ value: e.target.value });
+            setTokenOneAmount({ value: nan ? tokenOneAmount.value : e.target.value });
         } if (token.address === tokens[1].address) {
-            setTokenTwoAmount({ value: e.target.value });
+            setTokenTwoAmount({ value: nan ? tokenTwoAmount.value : e.target.value });
         }
     }
 
@@ -49,7 +51,7 @@ const Balance = () => {
                 token,
                 tokenOneAmount.value,
                 dispatch
-            ); setTokenOneAmount({ value: 0 });
+            ); setTokenOneAmount({ value: "" });
         } else if (token.address === tokens[1].address) {
             transfertTokens(
                 provider,
@@ -58,7 +60,7 @@ const Balance = () => {
                 token,
                 tokenTwoAmount.value,
                 dispatch
-            ); setTokenTwoAmount({ value: 0 });
+            ); setTokenTwoAmount({ value: "" });
         }
     }
 
@@ -111,10 +113,9 @@ const Balance = () => {
                     <label htmlFor="token0">{symbols && symbols[0]} Amount</label>
                     <input
                         placeholder="0.000"
-                        type="number"
+                        type="text"
                         id="token0"
-                        min="0"
-                        value={tokenOneAmount.value === 0 ? "" : tokenOneAmount.value }
+                        value={tokenOneAmount.value}
                         onChange={(e) => tokenChange(e, tokens[0])}
                     />
                     <button className='button' type='submit'>
@@ -155,10 +156,9 @@ const Balance = () => {
                     <label htmlFor="token1">{symbols && symbols[1]} Amount</label>
                     <input
                         placeholder="0.000"
-                        type="number"
+                        type="text"
                         id="token1"
-                        min="0"
-                        value={!tokenTwoAmount.value ? "" : tokenTwoAmount.value }
+                        value={tokenTwoAmount.value}
                         onChange={(e) => tokenChange(e, tokens[1])}
                     />
   
@@ -176,4 +176,3 @@ const Balance = () => {
 }
 
 export default Balance;
-  

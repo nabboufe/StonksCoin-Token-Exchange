@@ -422,8 +422,8 @@ hr {
 	background: transparent;
 	color: var(--clr-blue);
 
-	border: 1.5px solid var(--clr-blue);
-	border-radius: 10px;
+	border: 1px solid var(--clr-blue);
+	border-radius: 7px;
 
 	width: 100%;
 	margin: 0.75em auto;
@@ -683,6 +683,28 @@ table td {
 	.exchange__header--networks {
 		grid-column-start: 4;
 		grid-column-end: 6;
+		grid-row: 1;
+
+		position: absolute;
+		top: 50%;
+		left: 24px;
+		transform: translate(0, -50%);
+	}
+
+	.exchange__header--getSTK {
+		grid-column-start: 7;
+		grid-column-end: 8;
+		grid-row: 1;
+
+		position: absolute;
+		top: 50%;
+		left: 24px;
+		transform: translate(0, -50%);
+	}
+
+	.exchange__header--getCC {
+		grid-column-start: 8;
+		grid-column-end: 9;
 		grid-row: 1;
 
 		position: absolute;

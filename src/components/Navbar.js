@@ -15,7 +15,9 @@ const Navbar = () => {
     const account = useSelector(state => state.provider.account);
     const balance = Number(useSelector(state => state.provider.balance));
     const chainId = useSelector(state => state.provider.chainId);
-    const truth = chainId === 31337;    
+    const truth = chainId === 31337;
+
+    console.log(chainId);
     
     let svg = createAvatar(style, {
         seed: account,
@@ -37,7 +39,6 @@ const Navbar = () => {
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: e.target.value }] 
         });
-        console.log(chainId);
     }
 
     return(
@@ -60,7 +61,7 @@ const Navbar = () => {
                     >
                         <option value="0" disabled>Select Network</option>
                         <option value="0x7A69">Localhost</option>
-                        <option value="0x2a">Kovan</option>
+                        <option value="0x89">Polygon</option>
                     </select>
                 ) }
 
@@ -74,7 +75,7 @@ const Navbar = () => {
                 {
                     account ?
                         ( <a 
-                            href={truth ? "./" : `${config[chainId].explorerURL}/address/${account}`}
+                            href={truth ? "./" : `${config[chainId].explorerURL}address/${account}`}
                             target={truth ? "_self" : "_blank"}
                             rel="noreferrer"
                           >

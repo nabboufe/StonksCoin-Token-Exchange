@@ -72,7 +72,7 @@ async function main() {
     let val2 = [];
 
     //await wait(0.2);
-    for(let i = 0; i <= 100; i++) {
+    for(let i = 0; i <= 5; i++) {
         val1.push(80 + Math.floor(5 * (Math.random() + 1.5) + (i * 1.1)));
         val2.push(100 + Math.floor(10 * (Math.random() + 1.3) + (i * 1.7)));
         transaction = await exchange.connect(user1).makeOrder(
@@ -88,7 +88,7 @@ async function main() {
         } await wait(0.1)
     }
     console.log('\n');
-    for (let i = 0; i <= 100; i++) {
+    for (let i = 0; i <= 5; i++) {
         transaction = await exchange.connect(user2).makeOrder(
             CoinCoin.address, tokens(val2[i]),
             StonksCoin.address, tokens(val1[i])
